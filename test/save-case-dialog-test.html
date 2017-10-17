@@ -1,0 +1,702 @@
+<!--
+Copyright 2017 Next Century Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../save-case-dialog.html">
+</head>
+
+<body>
+  <test-fixture id="save-case-dialog-fixture">
+    <template>
+      <save-case-dialog></save-case-dialog>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('<save-case-dialog> save document tests', function() {
+      var element;
+
+      setup(function(done) {
+        element = fixture('save-case-dialog-fixture');
+        element.cases = [{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }];
+        element.documentId = 'myDocumentId';
+        element.documentName = 'My Document Name';
+        element.documentType = 'myDocumentType';
+        element.profileManager = {
+          reloadUser: function() {},
+          saveDocument: function() {}
+        };
+        element.userId = '1234';
+        flush(done);
+      });
+
+      test('input properties are set as expected', function() {
+        expect(element.buildPopupDataFunction).to.not.exist;
+        expect(element.cases).to.deep.equal([{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }]);
+        expect(element.documentId).to.equal('myDocumentId');
+        expect(element.documentName).to.equal('My Document Name');
+        expect(element.documentType).to.equal('myDocumentType');
+        expect(element.entityId).to.not.exist;
+        expect(element.entityName).to.not.exist;
+        expect(element.entityType).to.not.exist;
+        expect(element.functionConfig).to.not.exist;
+        expect(element.networkExpansionParameters).to.not.exist;
+        expect(element.profileManager).to.be.an('Object');
+        expect(element.profileManager.reloadUser).to.be.an('Function');
+        expect(element.profileManager.saveDocument).to.be.an('Function');
+        expect(element.searchParameters).to.not.exist;
+        expect(element.userId).to.equal('1234');
+      });
+
+      test('private properties are set as expected', function() {
+        expect(element._caseName).to.equal('');
+        expect(element._dialogOpened).to.be.false;
+        expect(element._networkExpansionParametersToShow).to.not.exist;
+        expect(element._searchParametersToShow).to.not.exist;
+      });
+
+      test('does have styled-dialog element', function() {
+        expect(element.$$('styled-dialog')).to.exist;
+        expect(element.$$('styled-dialog').fill).to.be.true;
+        expect(element.$$('styled-dialog').header).to.equal('Save myDocumentType');
+        expect(element.$$('styled-dialog').id).to.equal('saveDialog');
+      });
+
+      test('does not have terms-display elements', function() {
+        var displays = Polymer.dom(element.root).querySelectorAll('terms-display');
+        expect(displays.length).to.equal(0);
+      });
+
+      test('does have document div elements', function() {
+        expect(element.$$('#documentType')).to.exist;
+        expect(element.$$('#documentType').innerHTML).to.equal('myDocumentType');
+        expect(element.$$('#documentName')).to.exist;
+        expect(element.$$('#documentName').innerHTML).to.equal('My Document Name');;
+      });
+
+      test('does not have entity div elements', function() {
+        expect(element.$$('#entityType')).to.not.exist;
+        expect(element.$$('#entityName')).to.not.exist;
+      });
+
+      test('does have paper-listbox and paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.exist;
+        var items = Polymer.dom(element.root).querySelectorAll('paper-item');
+        expect(items.length).to.equal(2);
+        expect(items[0].innerHTML).to.equal('Case 1');
+        expect(items[1].innerHTML).to.equal('Case 2');
+      });
+
+      test('does have paper-input and button-action elements', function() {
+        expect(element.$$('paper-input')).to.exist;
+        expect(element.$$('paper-input').label).to.equal('Enter Case Name');
+        expect(element.$$('paper-input').value).to.equal('');
+        expect(element.$$('button-action')).to.exist;
+        expect(element.$$('button-action').disabled).to.be.true;
+        expect(element.$$('button-action').text).to.equal('Save');
+        expect(element.$$('button-action').clickListener).to.be.an('Object');
+        expect(element.$$('button-action').clickListener.onClick).to.be.a('Function');
+      });
+
+      test('open does call profileManager.reloadUser then open the dialog', function(done) {
+        var called = 0;
+        element.profileManager.reloadUser = function(callback) {
+          ++called;
+          expect(element._dialogOpened).to.be.false;
+          expect(element.$$('styled-dialog').opened).to.be.false;
+          expect(callback).to.be.a('Function');
+          callback();
+        };
+
+        element.open();
+
+        flush(function() {
+          expect(called).to.equal(1);
+          expect(element._dialogOpened).to.be.true;
+          expect(element.$$('styled-dialog').opened).to.be.true;
+          done();
+        });
+      });
+
+      test('save does call profileManager.saveDocument then close the dialog', function(done) {
+        var called = 0;
+        element.profileManager.saveDocument = function(caseName, documentId) {
+          ++called;
+          expect(element._dialogOpened).to.be.true;
+          expect(element.$$('styled-dialog').opened).to.be.true;
+          expect(caseName).to.equal('myCaseName');
+          expect(documentId).to.equal('myDocumentId');
+        };
+
+        element._dialogOpened = true;
+        element._caseName = 'myCaseName';
+        element.save();
+
+        flush(function() {
+          expect(called).to.equal(1);
+          expect(element._dialogOpened).to.be.false;
+          expect(element.$$('styled-dialog').opened).to.be.false;
+          expect(element._caseName).to.equal('');
+          done();
+        });
+      });
+    });
+
+    suite('<save-case-dialog> save entity tests', function() {
+      var element;
+
+      setup(function(done) {
+        element = fixture('save-case-dialog-fixture');
+        element.cases = [{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }];
+        element.entityId = 'myDocumentId';
+        element.entityName = 'My Entity Name';
+        element.entityType = 'myEntityType';
+        element.profileManager = {
+          reloadUser: function() {},
+          saveEntity: function() {}
+        };
+        element.userId = '1234';
+        flush(done);
+      });
+
+      test('input properties are set as expected', function() {
+        expect(element.buildPopupDataFunction).to.not.exist;
+        expect(element.cases).to.deep.equal([{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }]);
+        expect(element.documentId).to.not.exist;
+        expect(element.documentName).to.not.exist;
+        expect(element.documentType).to.not.exist;
+        expect(element.entityId).to.equal('myDocumentId');
+        expect(element.entityName).to.equal('My Entity Name');
+        expect(element.entityType).to.equal('myEntityType');
+        expect(element.functionConfig).to.not.exist;
+        expect(element.networkExpansionParameters).to.not.exist;
+        expect(element.profileManager).to.be.an('Object');
+        expect(element.profileManager.reloadUser).to.be.an('Function');
+        expect(element.profileManager.saveEntity).to.be.an('Function');
+        expect(element.searchParameters).to.not.exist;
+        expect(element.userId).to.equal('1234');
+      });
+
+      test('private properties are set as expected', function() {
+        expect(element._caseName).to.equal('');
+        expect(element._dialogOpened).to.be.false;
+        expect(element._networkExpansionParametersToShow).to.not.exist;
+        expect(element._searchParametersToShow).to.not.exist;
+      });
+
+      test('does have styled-dialog element', function() {
+        expect(element.$$('styled-dialog')).to.exist;
+        expect(element.$$('styled-dialog').fill).to.be.true;
+        expect(element.$$('styled-dialog').header).to.equal('Save myEntityType');
+        expect(element.$$('styled-dialog').id).to.equal('saveDialog');
+      });
+
+      test('does not have terms-display elements', function() {
+        var displays = Polymer.dom(element.root).querySelectorAll('terms-display');
+        expect(displays.length).to.equal(0);
+      });
+
+      test('does not have document div elements', function() {
+        expect(element.$$('#documentType')).to.not.exist;
+        expect(element.$$('#documentName')).to.not.exist;
+      });
+
+      test('does have entity div elements', function() {
+        expect(element.$$('#entityType')).to.exist;
+        expect(element.$$('#entityType').innerHTML).to.equal('myEntityType');
+        expect(element.$$('#entityName')).to.exist;
+        expect(element.$$('#entityName').innerHTML).to.equal('My Entity Name');;
+      });
+
+      test('does have paper-listbox and paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.exist;
+        var items = Polymer.dom(element.root).querySelectorAll('paper-item');
+        expect(items.length).to.equal(2);
+        expect(items[0].innerHTML).to.equal('Case 1');
+        expect(items[1].innerHTML).to.equal('Case 2');
+      });
+
+      test('does have paper-input and button-action elements', function() {
+        expect(element.$$('paper-input')).to.exist;
+        expect(element.$$('paper-input').label).to.equal('Enter Case Name');
+        expect(element.$$('paper-input').value).to.equal('');
+        expect(element.$$('button-action')).to.exist;
+        expect(element.$$('button-action').disabled).to.be.true;
+        expect(element.$$('button-action').text).to.equal('Save');
+        expect(element.$$('button-action').clickListener).to.be.an('Object');
+        expect(element.$$('button-action').clickListener.onClick).to.be.a('Function');
+      });
+
+      test('open does call profileManager.reloadUser then open the dialog', function(done) {
+        var called = 0;
+        element.profileManager.reloadUser = function(callback) {
+          ++called;
+          expect(element._dialogOpened).to.be.false;
+          expect(element.$$('styled-dialog').opened).to.be.false;
+          expect(callback).to.be.a('Function');
+          callback();
+        };
+
+        element.open();
+
+        flush(function() {
+          expect(called).to.equal(1);
+          expect(element._dialogOpened).to.be.true;
+          expect(element.$$('styled-dialog').opened).to.be.true;
+          done();
+        });
+      });
+
+      test('save does call profileManager.saveEntity then close the dialog', function(done) {
+        var called = 0;
+        element.profileManager.saveEntity = function(caseName, entityId) {
+          ++called;
+          expect(element._dialogOpened).to.be.true;
+          expect(element.$$('styled-dialog').opened).to.be.true;
+          expect(caseName).to.equal('myCaseName');
+          expect(entityId).to.equal('myDocumentId');
+        };
+
+        element._dialogOpened = true;
+        element._caseName = 'myCaseName';
+        element.save();
+
+        flush(function() {
+          expect(called).to.equal(1);
+          expect(element._dialogOpened).to.be.false;
+          expect(element.$$('styled-dialog').opened).to.be.false;
+          expect(element._caseName).to.equal('');
+          done();
+        });
+      });
+    });
+
+    suite('<save-case-dialog> save search tests', function() {
+      var element;
+
+      setup(function(done) {
+        element = fixture('save-case-dialog-fixture');
+        element.buildPopupDataFunction = function(data, config) {
+          return Object.keys(data).length ? data : null;
+        };
+        element.cases = [{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }];
+        element.functionConfig = {
+          key1: 'Field 1',
+          key2: 'Field 2'
+        };
+        element.networkExpansionParameters = {
+          key1: true
+        };
+        element.profileManager = {
+          reloadUser: function() {},
+          saveSearch: function() {}
+        };
+        element.searchParameters = {
+          key1: ['value1'],
+          key2: ['value2', 'value3', 'value4']
+        };
+        element.userId = '1234';
+        flush(done);
+      });
+
+      test('input properties are set as expected', function() {
+        expect(element.buildPopupDataFunction).to.be.a('Function');
+        expect(element.cases).to.deep.equal([{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }]);
+        expect(element.documentId).to.not.exist;
+        expect(element.documentName).to.not.exist;
+        expect(element.documentType).to.not.exist;
+        expect(element.entityId).to.not.exist;
+        expect(element.entityName).to.not.exist;
+        expect(element.entityType).to.not.exist;
+        expect(element.functionConfig).to.deep.equal({
+          key1: 'Field 1',
+          key2: 'Field 2'
+        });
+        expect(element.networkExpansionParameters).to.deep.equal({
+          key1: true
+        });
+        expect(element.profileManager).to.be.an('Object');
+        expect(element.profileManager.reloadUser).to.be.an('Function');
+        expect(element.profileManager.saveSearch).to.be.an('Function');
+        expect(element.searchParameters).to.deep.equal({
+          key1: ['value1'],
+          key2: ['value2', 'value3', 'value4']
+        });
+        expect(element.userId).to.equal('1234');
+      });
+
+      test('private properties are set as expected', function() {
+        expect(element._caseName).to.equal('');
+        expect(element._dialogOpened).to.be.false;
+        expect(element._networkExpansionParametersToShow).to.deep.equal({
+          key1: true
+        });
+        expect(element._searchParametersToShow).to.deep.equal({
+          key1: ['value1'],
+          key2: ['value2', 'value3', 'value4']
+        });
+      });
+
+      test('does have styled-dialog element', function() {
+        expect(element.$$('styled-dialog')).to.exist;
+        expect(element.$$('styled-dialog').fill).to.be.true;
+        expect(element.$$('styled-dialog').header).to.equal('Save Search');
+        expect(element.$$('styled-dialog').id).to.equal('saveDialog');
+      });
+
+      test('does have terms-display elements', function() {
+        var displays = Polymer.dom(element.root).querySelectorAll('terms-display');
+        expect(displays.length).to.equal(2);
+        expect(displays[0].collection).to.deep.equal({
+          key1: ['value1'],
+          key2: ['value2', 'value3', 'value4']
+        });
+        expect(displays[1].collection).to.deep.equal({
+          key1: true
+        });
+        expect(displays[1].label).to.equal('Net. Exp.');
+      });
+
+      test('does not have document div elements', function() {
+        expect(element.$$('#documentType')).to.not.exist;
+        expect(element.$$('#documentName')).to.not.exist;
+      });
+
+      test('does not have entity div elements', function() {
+        expect(element.$$('#entityType')).to.not.exist;
+        expect(element.$$('#entityName')).to.not.exist;
+      });
+
+      test('does have paper-listbox and paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.exist;
+        var items = Polymer.dom(element.root).querySelectorAll('paper-item');
+        expect(items.length).to.equal(2);
+        expect(items[0].innerHTML).to.equal('Case 1');
+        expect(items[1].innerHTML).to.equal('Case 2');
+      });
+
+      test('does have paper-input and button-action elements', function() {
+        expect(element.$$('paper-input')).to.exist;
+        expect(element.$$('paper-input').label).to.equal('Enter Case Name');
+        expect(element.$$('paper-input').value).to.equal('');
+        expect(element.$$('button-action')).to.exist;
+        expect(element.$$('button-action').disabled).to.be.true;
+        expect(element.$$('button-action').text).to.equal('Save');
+        expect(element.$$('button-action').clickListener).to.be.an('Object');
+        expect(element.$$('button-action').clickListener.onClick).to.be.a('Function');
+      });
+
+      test('open does call profileManager.reloadUser then open the dialog', function(done) {
+        var called = 0;
+        element.profileManager.reloadUser = function(callback) {
+          ++called;
+          expect(element._dialogOpened).to.be.false;
+          expect(element.$$('styled-dialog').opened).to.be.false;
+          expect(callback).to.be.a('Function');
+          callback();
+        };
+
+        element.open();
+
+        flush(function() {
+          expect(called).to.equal(1);
+          expect(element._dialogOpened).to.be.true;
+          expect(element.$$('styled-dialog').opened).to.be.true;
+          done();
+        });
+      });
+
+      test('save does call profileManager.saveSearch then close the dialog', function(done) {
+        var called = 0;
+        element.profileManager.saveSearch = function(caseName) {
+          ++called;
+          expect(element._dialogOpened).to.be.true;
+          expect(element.$$('styled-dialog').opened).to.be.true;
+          expect(caseName).to.equal('myCaseName');
+        };
+
+        element._dialogOpened = true;
+        element._caseName = 'myCaseName';
+        element.save();
+
+        flush(function() {
+          expect(called).to.equal(1);
+          expect(element._dialogOpened).to.be.false;
+          expect(element.$$('styled-dialog').opened).to.be.false;
+          expect(element._caseName).to.equal('');
+          done();
+        });
+      });
+    });
+
+    suite('<save-case-dialog> tests with empty search parameters', function() {
+      var element;
+
+      setup(function(done) {
+        element = fixture('save-case-dialog-fixture');
+        element.buildPopupDataFunction = function(data, config) {
+          return Object.keys(data).length ? data : null;
+        };
+        element.cases = [];
+        element.functionConfig = {
+          key1: 'Field 1',
+          key2: 'Field 2'
+        };
+        element.networkExpansionParameters = {};
+        element.profileManager = {
+          reloadUser: function() {},
+          saveDocument: function() {},
+          saveEntity: function() {},
+          saveSearch: function() {}
+        };
+        element.searchParameters = {};
+        element.userId = '1234';
+        flush(done);
+      });
+
+      test('input properties are set as expected', function() {
+        expect(element.buildPopupDataFunction).to.be.a('Function');
+        expect(element.cases).to.deep.equal([]);
+        expect(element.documentId).to.not.exist;
+        expect(element.documentName).to.not.exist;
+        expect(element.documentType).to.not.exist;
+        expect(element.entityId).to.not.exist;
+        expect(element.entityName).to.not.exist;
+        expect(element.entityType).to.not.exist;
+        expect(element.functionConfig).to.deep.equal({
+          key1: 'Field 1',
+          key2: 'Field 2'
+        });
+        expect(element.networkExpansionParameters).to.deep.equal({});
+        expect(element.profileManager).to.be.an('Object');
+        expect(element.profileManager.reloadUser).to.be.an('Function');
+        expect(element.profileManager.saveDocument).to.be.an('Function');
+        expect(element.profileManager.saveEntity).to.be.an('Function');
+        expect(element.profileManager.saveSearch).to.be.an('Function');
+        expect(element.searchParameters).to.deep.equal({});
+        expect(element.userId).to.equal('1234');
+      });
+
+      test('private properties are set as expected', function() {
+        expect(element._caseName).to.equal('');
+        expect(element._dialogOpened).to.be.false;
+        expect(element._networkExpansionParametersToShow).to.be.null;
+        expect(element._searchParametersToShow).to.be.null;
+      });
+
+      test('does have styled-dialog element', function() {
+        expect(element.$$('styled-dialog')).to.exist;
+        expect(element.$$('styled-dialog').fill).to.be.true;
+        expect(element.$$('styled-dialog').header).to.equal('Save Search');
+        expect(element.$$('styled-dialog').id).to.equal('saveDialog');
+      });
+
+      test('does not have terms-display elements', function() {
+        var displays = Polymer.dom(element.root).querySelectorAll('terms-display');
+        expect(displays.length).to.equal(0);
+      });
+
+      test('does not have document div elements', function() {
+        expect(element.$$('#documentType')).to.not.exist;
+        expect(element.$$('#documentName')).to.not.exist;
+      });
+
+      test('does not have entity div elements', function() {
+        expect(element.$$('#entityType')).to.not.exist;
+        expect(element.$$('#entityName')).to.not.exist;
+      });
+
+      test('does not have paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.exist;
+        var items = Polymer.dom(element.root).querySelectorAll('paper-item');
+        expect(items.length).to.equal(0);
+      });
+
+      test('does have paper-input and button-action elements', function() {
+        expect(element.$$('paper-input')).to.exist;
+        expect(element.$$('paper-input').label).to.equal('Enter Case Name');
+        expect(element.$$('paper-input').value).to.equal('');
+        expect(element.$$('button-action')).to.exist;
+        expect(element.$$('button-action').disabled).to.be.true;
+        expect(element.$$('button-action').text).to.equal('Save');
+        expect(element.$$('button-action').clickListener).to.be.an('Object');
+        expect(element.$$('button-action').clickListener.onClick).to.be.a('Function');
+      });
+    });
+
+    suite('<save-case-dialog> tests with no data', function() {
+      var element;
+
+      setup(function(done) {
+        element = fixture('save-case-dialog-fixture');
+        element.cases = [];
+        element.profileManager = {
+          reloadUser: function() {},
+          saveDocument: function() {},
+          saveEntity: function() {},
+          saveSearch: function() {}
+        };
+        element.userId = '1234';
+        flush(done);
+      });
+
+      test('input properties are set as expected', function() {
+        expect(element.buildPopupDataFunction).to.not.exist;
+        expect(element.cases).to.deep.equal([]);
+        expect(element.documentId).to.not.exist;
+        expect(element.documentName).to.not.exist;
+        expect(element.documentType).to.not.exist;
+        expect(element.entityId).to.not.exist;
+        expect(element.entityName).to.not.exist;
+        expect(element.entityType).to.not.exist;
+        expect(element.functionConfig).to.not.exist;
+        expect(element.networkExpansionParameters).to.not.exist;
+        expect(element.profileManager).to.be.an('Object');
+        expect(element.profileManager.reloadUser).to.be.an('Function');
+        expect(element.profileManager.saveDocument).to.be.an('Function');
+        expect(element.profileManager.saveEntity).to.be.an('Function');
+        expect(element.profileManager.saveSearch).to.be.an('Function');
+        expect(element.searchParameters).to.not.exist;
+        expect(element.userId).to.equal('1234');
+      });
+
+      test('private properties are set as expected', function() {
+        expect(element._caseName).to.equal('');
+        expect(element._dialogOpened).to.be.false;
+        expect(element._networkExpansionParametersToShow).to.not.exist;
+        expect(element._searchParametersToShow).to.not.exist;
+      });
+
+      test('does have styled-dialog element', function() {
+        expect(element.$$('styled-dialog')).to.exist;
+        expect(element.$$('styled-dialog').fill).to.be.true;
+        expect(element.$$('styled-dialog').header).to.equal('Save ');
+        expect(element.$$('styled-dialog').id).to.equal('saveDialog');
+      });
+
+      test('does not have terms-display elements', function() {
+        var displays = Polymer.dom(element.root).querySelectorAll('terms-display');
+        expect(displays.length).to.equal(0);
+      });
+
+      test('does not have document div elements', function() {
+        expect(element.$$('#documentType')).to.not.exist;
+        expect(element.$$('#documentName')).to.not.exist;
+      });
+
+      test('does not have entity div elements', function() {
+        expect(element.$$('#entityType')).to.not.exist;
+        expect(element.$$('#entityName')).to.not.exist;
+      });
+
+      test('does not have paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.exist;
+        var items = Polymer.dom(element.root).querySelectorAll('paper-item');
+        expect(items.length).to.equal(0);
+      });
+
+      test('does have paper-input and button-action elements', function() {
+        expect(element.$$('paper-input')).to.exist;
+        expect(element.$$('paper-input').label).to.equal('Enter Case Name');
+        expect(element.$$('paper-input').value).to.equal('');
+        expect(element.$$('button-action')).to.exist;
+        expect(element.$$('button-action').disabled).to.be.true;
+        expect(element.$$('button-action').text).to.equal('Save');
+        expect(element.$$('button-action').clickListener).to.be.an('Object');
+        expect(element.$$('button-action').clickListener.onClick).to.be.a('Function');
+      });
+
+      test('_findType does return as expected', function() {
+        expect(element._findType('myDocumentType', undefined, undefined)).to.equal('myDocumentType');
+        expect(element._findType(undefined, 'myEntityType', undefined)).to.equal('myEntityType');
+        expect(element._findType(undefined, undefined, {})).to.equal('Search');
+        expect(element._findType(undefined, undefined, undefined)).to.equal('');
+      });
+
+      test('_setCaseName does set _caseName', function() {
+        element._setCaseName({
+          model: {
+            item: {
+              name: 'Case 3'
+            }
+          }
+        });
+        expect(element._caseName).to.equal('Case 3');
+element._setCaseName({
+          model: {
+            item: {
+              name: 'Case 4'
+            }
+          }
+        });
+        expect(element._caseName).to.equal('Case 4');
+      });
+
+      test('_validateCaseName does work as expected', function() {
+        expect(element._validateCaseName('')).to.be.false;
+        expect(element._validateCaseName(' ')).to.be.false;
+        expect(element._validateCaseName('test')).to.be.true;
+        expect(element._validateCaseName(' test ')).to.be.true;
+      });
+
+      test('save does not do anything', function(done) {
+        element.profileManager.saveDocument = function() {
+          expect.fail();
+        };
+        element.profileManager.saveEntity = function() {
+          expect.fail();
+        };
+        element.profileManager.saveSearch = function() {
+          expect.fail();
+        };
+
+        element._caseName = 'Case 1';
+        element.save();
+        flush(done);
+      });
+    });
+  </script>
+</body>
+</html>

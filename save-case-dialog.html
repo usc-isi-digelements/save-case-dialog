@@ -1,0 +1,427 @@
+<!--
+Copyright 2017 Next Century Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../button-action/button-action.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../styled-dialog/styled-dialog.html">
+<link rel="import" href="../styled-dialog/styled-dialog-styles.html">
+<link rel="import" href="../terms-display/terms-display.html">
+
+<!--
+A Polymer Element showing a dialog to save a document, entity, or search in a case using a profile manager.
+
+### Example
+```js
+var buildPopupDataFunction = function(data, config) {
+  return Object.keys(data).reduce(function(output, key) {
+    output[config[key]] = data[key];
+    return output;
+  }, {});
+};
+
+var cases = [{
+  name: 'Case 1'
+}, {
+  name: 'Case 2'
+}];
+
+var functionConfig = {
+  key1: 'Field 1',
+  key2: 'Field 2'
+};
+
+var networkExpansionParameters = {
+  key1: true
+};
+
+var searchParameters = {
+  key1: ['value1'],
+  key2: ['value2', 'value3', 'value4']
+};
+```
+
+```html
+<save-case-dialog
+  build-popup-data-function="[[buildPopupDataFunction]]"
+  cases="[[cases]]"
+  function-config="[[functionConfig]]"
+  network-expansion-parameters="[[networkExpansionParameters]]"
+  profile-manager="[[profileManager]]"
+  search-parameters="[[searchParameters]]"
+  user-id="1234">
+</save-case-dialog>
+```
+
+@demo demo/index.html
+-->
+
+<dom-module id="save-case-dialog">
+  <template>
+    <style include="styled-dialog-styles"></style>
+    <style include="iron-flex"></style>
+
+    <style>
+      paper-listbox {
+        padding-top: 0px;
+      }
+
+      paper-item {
+        cursor: pointer;
+      }
+
+      terms-display {
+        --terms-display-label-style-mixin: {
+          width: 60px;
+        }
+      }
+    </style>
+
+    <styled-dialog id="saveDialog" opened="{{_dialogOpened}}" header="Save [[_findType(documentType, entityType, searchParameters)]]" fill>
+      <template is="dom-if" if="[[_searchParametersToShow]]">
+        <terms-display collection="[[_searchParametersToShow]]"></terms-display>
+      </template>
+
+      <template is="dom-if" if="[[_networkExpansionParametersToShow]]">
+        <terms-display collection="[[_networkExpansionParametersToShow]]" label="Net. Exp."></terms-display>
+      </template>
+
+      <template is="dom-if" if="[[documentId]]">
+        <div id="documentType" class="styled-dialog-name">[[documentType]]</div>
+        <div id="documentName" class="styled-dialog-text">[[documentName]]</div>
+      </template>
+
+      <template is="dom-if" if="[[entityId]]">
+        <div id="entityType" class="styled-dialog-name">[[entityType]]</div>
+        <div id="entityName" class="styled-dialog-text">[[entityName]]</div>
+      </template>
+
+      <div class="styled-dialog-divider"></div>
+
+      <template is="dom-if" if="[[userId]]" restamp="true">
+        <div class="styled-dialog-name">Cases</div>
+        <paper-listbox>
+          <template is="dom-repeat" items="[[cases]]">
+            <paper-item on-tap="_setCaseName">[[item.name]]</paper-item>
+          </template>
+        </paper-listbox>
+
+        <div class="styled-dialog-name">Save [[_findType(documentType, entityType, searchParameters)]] to Case</div>
+        <div class="layout horizontal">
+          <paper-input class="flex styled-dialog-right-space" label="Enter Case Name" value="{{_caseName}}" no-label-float></paper-input>
+          <button-action class="styled-dialog-button" title="Save" text="Save" disabled="[[!_validateCaseName(_caseName)]]" click-listener="[[_createSaveListener()]]"></button-action>
+        </div>
+      </template>
+    </styled-dialog>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'save-case-dialog',
+
+      properties: {
+        /**
+         * (Required to save search)
+         *
+         * The function to build the data for the terms-display in the popup.
+         * Must accept a search or network expansion parameters object and a config object.
+         * Must return an object containing fields mapped to arrays of string values.
+         *
+         * @type {Object}
+         */
+        buildPopupDataFunction: {
+          type: Object
+        },
+
+        /**
+         * (Required)
+         *
+         * The list of the user's saved cases.  Each object contains a "name" string.
+         *
+         * @type {Array}
+         */
+        cases: {
+          type: Array
+        },
+
+        /**
+         * (Required to save document)
+         *
+         * The ID of the document to save.
+         *
+         * @type {String}
+         */
+        documentId: {
+          type: String
+        },
+
+        /**
+         * (Required to save document)
+         *
+         * The name of the document to save, shown in the dialog.
+         *
+         * @type {String}
+         */
+        documentName: {
+          type: String
+        },
+
+        /**
+         * (Required to save document)
+         *
+         * The type of the document to save, shown in the dialog.
+         *
+         * @type {String}
+         */
+        documentType: {
+          type: String
+        },
+
+        /**
+         * (Required to save entity)
+         *
+         * The ID of the entity to save.
+         *
+         * @type {String}
+         */
+        entityId: {
+          type: String
+        },
+
+        /**
+         * (Required to save entity)
+         *
+         * The name of the entity to save, shown in the dialog.
+         *
+         * @type {String}
+         */
+        entityName: {
+          type: String
+        },
+
+        /**
+         * (Required to save entity)
+         *
+         * The type of the entity to save, shown in the dialog.
+         *
+         * @type {String}
+         */
+        entityType: {
+          type: String
+        },
+
+        /**
+         * (Required to save search)
+         *
+         * The config object for the build function.
+         *
+         * @type {Object}
+         */
+        functionConfig: {
+          type: Object
+        },
+
+        /**
+         * (Required to save search)
+         *
+         * The network expansion parameters object.
+         *
+         * @type {Object}
+         */
+        networkExpansionParameters: {
+          type: Object
+        },
+
+        /**
+         * (Required)
+         *
+         * The profile manager object used to save searches.  Must have the functions "reloadUser" and "saveSearch" as properties.
+         *
+         * @param {Object}
+         */
+        profileManager: {
+          type: Object
+        },
+
+        /**
+         * (Required to save search)
+         *
+         * The search parameters object.
+         *
+         * @type {Object}
+         */
+        searchParameters: {
+          type: Object
+        },
+
+        /**
+         * (Required)
+         *
+         * The user ID.
+         */
+        userId: {
+          type: String
+        },
+
+        /**
+         * The case name in which to save the search.
+         *
+         * @type {String}
+         * @default ''
+         * @private
+         */
+        _caseName: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * Whether the dialog is opened.
+         *
+         * @type {Boolean}
+         * @default false
+         * @private
+         */
+        _dialogOpened: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * The network expansion parameters object to show in the terms-display.
+         *
+         * @type {Object}
+         * @private
+         */
+        _networkExpansionParametersToShow: {
+          computed: '_buildPopupData(buildPopupDataFunction, networkExpansionParameters, functionConfig)',
+          type: Object
+        },
+
+        /**
+         * The search parameters object to show in the terms-display.
+         *
+         * @type {Object}
+         * @private
+         */
+        _searchParametersToShow: {
+          computed: '_buildPopupData(buildPopupDataFunction, searchParameters, functionConfig)',
+          type: Object
+        }
+      },
+
+      /**
+       * Opens the dialog.
+       */
+      open: function() {
+        if(this.profileManager && this.profileManager.reloadUser) {
+          var self = this;
+          this.profileManager.reloadUser(function() {
+            self.set('_dialogOpened', true);
+          });
+        }
+      },
+
+      /**
+       * Saves a document, entity, and/or search for the chosen case if the case name is valid and closes the dialog.
+       */
+      save: function() {
+        if(this.profileManager && this._validateCaseName(this._caseName)) {
+          if(this.profileManager.saveDocument && this.documentId) {
+            this.profileManager.saveDocument(this._caseName, this.documentId);
+          }
+          if(this.profileManager.saveEntity && this.entityId) {
+            this.profileManager.saveEntity(this._caseName, this.entityId);
+          }
+          if(this.profileManager.saveSearch && this.searchParameters) {
+            this.profileManager.saveSearch(this._caseName);
+          }
+          this.set('_caseName', '');
+          this.set('_dialogOpened', false);
+        }
+      },
+
+      /**
+       * Creates and returns the data for the terms-display using the given function, data, and config.
+       *
+       * @param {Function} buildPopupDataFunction
+       * @param {Object} data
+       * @param {Object} config
+       * @return {Object}
+       * @private
+       */
+      _buildPopupData: function(buildPopupDataFunction, data, config) {
+        return buildPopupDataFunction && data && config ? buildPopupDataFunction(data, config) : {};
+      },
+
+      /**
+       * Creates and returns a listener to save a user's data.
+       *
+       * @return {Object}
+       * @private
+       */
+      _createSaveListener: function() {
+        var self = this;
+        return {
+          onClick: function() {
+            self.save();
+          }
+        };
+      },
+
+      /**
+       * Returns one of the given types:  the document, the entity, or "Search".
+       *
+       * @param {String} documentType
+       * @param {String} entityType
+       * @param {Object} searchParameters
+       * @return {String}
+       * @private
+       */
+      _findType: function(documentType, entityType, searchParameters) {
+        return (documentType ? documentType : (entityType ? entityType : (searchParameters ? 'Search' : '')));
+      },
+
+      /**
+       * Sets the case name to the name in the given event model.
+       *
+       * @param {Event} event
+       * @private
+       */
+      _setCaseName: function(event) {
+        this._caseName = event.model.item.name;
+      },
+
+      /**
+       * Returns whether the give name is valid (non-empty);
+       *
+       * @param {String} name
+       * @return {Boolean}
+       * @private
+       */
+      _validateCaseName: function(name) {
+        return !!name.trim();
+      }
+    });
+  })();
+  </script>
+</dom-module>

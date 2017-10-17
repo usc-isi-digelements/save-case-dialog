@@ -1,0 +1,31 @@
+{
+  "name": "save-case-dialog",
+  "description": "A Polymer Element showing a dialog to save a document, entity, or search in a case using a profile manager.",
+  "version": "2.0.0",
+  "authors": ["Next Century Corporation"],
+  "license": "Apache-2.0",
+  "keywords": [
+    "web-component",
+    "polymer"
+  ],
+  "main": "save-case-dialog.html",
+  "homepage": "https://github.com/DigElements/save-case-dialog/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.2",
+    "button-action": "DigElements/button-action#2.0.1",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
+    "paper-input": "PolymerElements/paper-input#^2.0.0",
+    "paper-item": "PolymerElements/paper-item#^2.0.0",
+    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
+    "styled-dialog": "DigElements/styled-dialog#2.1.2",
+    "terms-display": "DigElements/terms-display#2.1.3"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
+  }
+}

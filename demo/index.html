@@ -1,0 +1,156 @@
+<!--
+Copyright 2017 Next Century Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="../save-case-dialog.html">
+</head>
+
+<body unresolved>
+  <dom-bind id="demo">
+    <script>
+      (function(document) {
+        var demo = document.querySelector('dom-bind');
+
+        demo.buildPopupDataFunction = function(data, config) {
+          return Object.keys(data).reduce(function(output, key) {
+            output[config[key]] = data[key];
+            return output;
+          }, {});
+        };
+
+        demo.cases = [{
+          name: 'Case 1'
+        }, {
+          name: 'Case 2'
+        }];
+
+        demo.functionConfig = {
+          key1: 'Field 1',
+          key2: 'Field 2'
+        };
+
+        demo.networkExpansionParameters = {
+          key1: true
+        };
+
+        demo.profileManager = {
+          reloadUser: function(callback) {
+            console.log('Reload user');
+            callback();
+          },
+          saveDocument: function(caseName, documentId) {
+            console.log('Save document ' + documentId + ' to case ' + caseName);
+          },
+          saveEntity: function(caseName, entityId) {
+            console.log('Save entity ' + entityId + ' to case ' + caseName);
+          },
+          saveSearch: function(caseName) {
+            console.log('Save search to case ' + caseName);
+          }
+        };
+
+        demo.searchParameters = {
+          key1: ['value1'],
+          key2: ['value2', 'value3', 'value4']
+        };
+
+        demo.openDocumentDialog = function() {
+          demo.$.saveDocumentDialog.open();
+        };
+
+        demo.openEntityDialog = function() {
+          demo.$.saveEntityDialog.open();
+        };
+
+        demo.openSearchDialog = function() {
+          demo.$.saveSearchDialog.open();
+        };
+
+        demo.stringify = function(object) {
+          return JSON.stringify(object);
+        };
+      })(document);
+    </script>
+
+    <template is="dom-bind">
+      <h3>Properties</h3>
+      <p>Cases: [[stringify(cases)]]</p>
+      <p>Profile Manager Reload User: [[profileManager.reloadUser]]</p>
+      <p>Profile Manager Save Document: [[profileManager.saveDocument]]</p>
+      <p>Profile Manager Save Entity: [[profileManager.saveEntity]]</p>
+      <p>Profile Manager Save Search: [[profileManager.saveSearch]]</p>
+      <p>User ID: 1234</p>
+
+      <h3>Demo with Document</h3>
+      <p>Document ID: myDocumentId</p>
+      <p>Document Name: My Document Name</p>
+      <p>Document Type: myDocumentType</p>
+
+      <a href="#" on-tap="openDocumentDialog">Open Save Document Dialog</a>
+
+      <save-case-dialog
+        id="saveDocumentDialog"
+        cases="[[cases]]"
+        document-id="myDocumentId"
+        document-name="My Document Name"
+        document-type="myDocumentType"
+        profile-manager="[[profileManager]]"
+        user-id="1234">
+      </save-case-dialog>
+
+      <h3>Demo with Entity</h3>
+      <p>Entity ID: myEntityId</p>
+      <p>Entity Name: My Entity Name</p>
+      <p>Entity Type: myEntityType</p>
+
+      <a href="#" on-tap="openEntityDialog">Open Save Entity Dialog</a>
+
+      <save-case-dialog
+        id="saveEntityDialog"
+        cases="[[cases]]"
+        entity-id="myEntityId"
+        entity-name="My Entity Name"
+        entity-type="myEntityType"
+        profile-manager="[[profileManager]]"
+        user-id="1234">
+      </save-case-dialog>
+
+      <h3>Demo with Search Parameters</h3>
+      <p>Build Popup Data Function: [[buildPopupDataFunction]]</p>
+      <p>Function Config: [[stringify(functionConfig)]]</p>
+      <p>Network Expansion Parameters: [[stringify(networkExpansionParameters)]]</p>
+      <p>Search Parameters: [[stringify(searchParameters)]]</p>
+
+      <a href="#" on-tap="openSearchDialog">Open Save Search Dialog</a>
+
+      <save-case-dialog
+        id="saveSearchDialog"
+        build-popup-data-function="[[buildPopupDataFunction]]"
+        cases="[[cases]]"
+        function-config="[[functionConfig]]"
+        network-expansion-parameters="[[networkExpansionParameters]]"
+        profile-manager="[[profileManager]]"
+        search-parameters="[[searchParameters]]"
+        user-id="1234">
+      </save-case-dialog>
+    </template>
+  </dom-bind>
+</body>
+</html>
