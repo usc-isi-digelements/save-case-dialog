@@ -146,12 +146,14 @@ limitations under the License.
 
       test('save does call profileManager.saveDocument then close the dialog', function(done) {
         var called = 0;
-        element.profileManager.saveDocument = function(caseName, documentId) {
+        element.profileManager.saveDocument = function(caseName, documentId, documentName, documentType) {
           ++called;
           expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           expect(caseName).to.equal('myCaseName');
           expect(documentId).to.equal('myDocumentId');
+          expect(documentName).to.equal('My Document Name');
+          expect(documentType).to.equal('myDocumentType');
         };
 
         element._dialogOpened = true;
@@ -178,7 +180,7 @@ limitations under the License.
         }, {
           name: 'Case 2'
         }];
-        element.entityId = 'myDocumentId';
+        element.entityId = 'myEntityId';
         element.entityName = 'My Entity Name';
         element.entityType = 'myEntityType';
         element.profileManager = {
@@ -199,7 +201,7 @@ limitations under the License.
         expect(element.documentId).to.not.exist;
         expect(element.documentName).to.not.exist;
         expect(element.documentType).to.not.exist;
-        expect(element.entityId).to.equal('myDocumentId');
+        expect(element.entityId).to.equal('myEntityId');
         expect(element.entityName).to.equal('My Entity Name');
         expect(element.entityType).to.equal('myEntityType');
         expect(element.functionConfig).to.not.exist;
@@ -283,12 +285,14 @@ limitations under the License.
 
       test('save does call profileManager.saveEntity then close the dialog', function(done) {
         var called = 0;
-        element.profileManager.saveEntity = function(caseName, entityId) {
+        element.profileManager.saveEntity = function(caseName, entityId, entityName, entityType) {
           ++called;
           expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           expect(caseName).to.equal('myCaseName');
-          expect(entityId).to.equal('myDocumentId');
+          expect(entityId).to.equal('myEntityId');
+          expect(entityName).to.equal('My Entity Name');
+          expect(entityType).to.equal('myEntityType');
         };
 
         element._dialogOpened = true;

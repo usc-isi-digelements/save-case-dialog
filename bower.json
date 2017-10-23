@@ -1,7 +1,7 @@
 {
   "name": "save-case-dialog",
   "description": "A Polymer Element showing a dialog to save a document, entity, or search in a case using a profile manager.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
   "keywords": [

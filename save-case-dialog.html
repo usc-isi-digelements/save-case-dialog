@@ -353,10 +353,10 @@ var searchParameters = {
       save: function() {
         if(this.profileManager && this._validateCaseName(this._caseName)) {
           if(this.profileManager.saveDocument && this.documentId) {
-            this.profileManager.saveDocument(this._caseName, this.documentId);
+            this.profileManager.saveDocument(this._caseName, this.documentId, this.documentName, this.documentType);
           }
           if(this.profileManager.saveEntity && this.entityId) {
-            this.profileManager.saveEntity(this._caseName, this.entityId);
+            this.profileManager.saveEntity(this._caseName, this.entityId, this.entityName, this.entityType);
           }
           if(this.profileManager.saveSearch && this.searchParameters) {
             this.profileManager.saveSearch(this._caseName);
