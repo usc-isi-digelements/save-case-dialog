@@ -116,11 +116,17 @@ var searchParameters = {
 
       <template is="dom-if" if="[[userId]]" restamp="true">
         <div class="styled-dialog-name">Cases</div>
-        <paper-listbox>
-          <template is="dom-repeat" items="[[cases]]">
-            <paper-item on-tap="_setCaseName">[[item.name]]</paper-item>
-          </template>
-        </paper-listbox>
+        <template is="dom-if" if="[[cases.length]]">
+          <paper-listbox>
+            <template is="dom-repeat" items="[[cases]]">
+              <paper-item on-tap="_setCaseName">[[item.name]]</paper-item>
+            </template>
+          </paper-listbox>
+        </template>
+
+        <template is="dom-if" if="[[!cases.length]]">
+          <div class="styled-dialog-text">None</div>
+        </template>
 
         <div class="styled-dialog-name">Save [[_findType(documentType, entityType, searchParameters)]] to Case</div>
         <div class="layout horizontal">
@@ -324,7 +330,7 @@ var searchParameters = {
          * @private
          */
         _searchParametersToShow: {
-          computed: '_buildPopupData(buildPopupDataFunction, searchParameters, functionConfig)',
+          computed: '_buildPopupData(buildPopupDataFunction, searchParameters, functionConfig, searchParameters.*)',
           type: Object
         }
       },

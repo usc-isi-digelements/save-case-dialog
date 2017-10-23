@@ -548,8 +548,8 @@ limitations under the License.
         expect(element.$$('#entityName')).to.not.exist;
       });
 
-      test('does not have paper-item elements', function() {
-        expect(element.$$('paper-listbox')).to.exist;
+      test('does not have paper-listbox or paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.not.exist;
         var items = Polymer.dom(element.root).querySelectorAll('paper-item');
         expect(items.length).to.equal(0);
       });
@@ -631,8 +631,8 @@ limitations under the License.
         expect(element.$$('#entityName')).to.not.exist;
       });
 
-      test('does not have paper-item elements', function() {
-        expect(element.$$('paper-listbox')).to.exist;
+      test('does not have paper-listbox or paper-item elements', function() {
+        expect(element.$$('paper-listbox')).to.not.exist;
         var items = Polymer.dom(element.root).querySelectorAll('paper-item');
         expect(items.length).to.equal(0);
       });
