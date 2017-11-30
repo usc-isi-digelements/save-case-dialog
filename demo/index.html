@@ -55,11 +55,11 @@ limitations under the License.
             console.log('Reload user');
             callback();
           },
-          saveDocument: function(caseName, documentId) {
-            console.log('Save document ' + documentId + ' to case ' + caseName);
-          },
           saveEntity: function(caseName, entityId) {
             console.log('Save entity ' + entityId + ' to case ' + caseName);
+          },
+          saveResult: function(caseName, resultId) {
+            console.log('Save result ' + resultId + ' to case ' + caseName);
           },
           saveSearch: function(caseName) {
             console.log('Save search to case ' + caseName);
@@ -71,12 +71,12 @@ limitations under the License.
           key2: ['value2', 'value3', 'value4']
         };
 
-        demo.openDocumentDialog = function() {
-          demo.$.saveDocumentDialog.open();
-        };
-
         demo.openEntityDialog = function() {
           demo.$.saveEntityDialog.open();
+        };
+
+        demo.openResultDialog = function() {
+          demo.$.saveResultDialog.open();
         };
 
         demo.openSearchDialog = function() {
@@ -93,27 +93,10 @@ limitations under the License.
       <h3>Properties</h3>
       <p>Cases: [[stringify(cases)]]</p>
       <p>Profile Manager Reload User: [[profileManager.reloadUser]]</p>
-      <p>Profile Manager Save Document: [[profileManager.saveDocument]]</p>
       <p>Profile Manager Save Entity: [[profileManager.saveEntity]]</p>
+      <p>Profile Manager Save Result: [[profileManager.saveResult]]</p>
       <p>Profile Manager Save Search: [[profileManager.saveSearch]]</p>
       <p>User ID: 1234</p>
-
-      <h3>Demo with Document</h3>
-      <p>Document ID: myDocumentId</p>
-      <p>Document Name: My Document Name</p>
-      <p>Document Type: myDocumentType</p>
-
-      <a href="#" on-tap="openDocumentDialog">Open Save Document Dialog</a>
-
-      <save-case-dialog
-        id="saveDocumentDialog"
-        cases="[[cases]]"
-        document-id="myDocumentId"
-        document-name="My Document Name"
-        document-type="myDocumentType"
-        profile-manager="[[profileManager]]"
-        user-id="1234">
-      </save-case-dialog>
 
       <h3>Demo with Entity</h3>
       <p>Entity ID: myEntityId</p>
@@ -129,6 +112,23 @@ limitations under the License.
         entity-name="My Entity Name"
         entity-type="myEntityType"
         profile-manager="[[profileManager]]"
+        user-id="1234">
+      </save-case-dialog>
+
+      <h3>Demo with Result</h3>
+      <p>Result ID: myResultId</p>
+      <p>Result Name: My Result Name</p>
+      <p>Result Type: myResultType</p>
+
+      <a href="#" on-tap="openResultDialog">Open Save Result Dialog</a>
+
+      <save-case-dialog
+        id="saveResultDialog"
+        cases="[[cases]]"
+        profile-manager="[[profileManager]]"
+        result-id="myResultId"
+        result-name="My Result Name"
+        result-type="myResultType"
         user-id="1234">
       </save-case-dialog>
 

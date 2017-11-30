@@ -25,7 +25,7 @@ limitations under the License.
 <link rel="import" href="../terms-display/terms-display.html">
 
 <!--
-A Polymer Element showing a dialog to save a document, entity, or search in a case using a profile manager.
+A Polymer Element showing a dialog to save an entity, result, or search in a case using a profile manager.
 
 ### Example
 ```js
@@ -99,7 +99,7 @@ var searchParameters = {
       }
     </style>
 
-    <styled-dialog id="saveDialog" opened="{{_dialogOpened}}" header="Save [[_findType(documentType, entityType, searchParameters)]]" fill>
+    <styled-dialog id="saveDialog" opened="{{_dialogOpened}}" header="Save [[_findType(entityType, resultType, searchParameters)]]" fill>
       <template is="dom-if" if="[[_searchParametersToShow]]">
         <terms-display collection="[[_searchParametersToShow]]"></terms-display>
       </template>
@@ -108,9 +108,9 @@ var searchParameters = {
         <terms-display collection="[[_networkExpansionParametersToShow]]" label="Net. Exp."></terms-display>
       </template>
 
-      <template is="dom-if" if="[[documentId]]">
-        <div id="documentType" class="styled-dialog-name">[[documentType]]</div>
-        <div id="documentName" class="styled-dialog-text">[[documentName]]</div>
+      <template is="dom-if" if="[[resultId]]">
+        <div id="resultType" class="styled-dialog-name">[[resultType]]</div>
+        <div id="resultName" class="styled-dialog-text">[[resultName]]</div>
       </template>
 
       <template is="dom-if" if="[[entityId]]">
@@ -134,7 +134,7 @@ var searchParameters = {
           <div class="styled-dialog-text">None</div>
         </template>
 
-        <div class="styled-dialog-name">Save [[_findType(documentType, entityType, searchParameters)]] to Case</div>
+        <div class="styled-dialog-name">Save [[_findType(entityType, resultType, searchParameters)]] to Case</div>
         <div class="layout horizontal">
           <paper-input class="flex styled-dialog-right-space" label="Enter Case Name" value="{{_caseName}}" no-label-float></paper-input>
           <button-action class="styled-dialog-button" title="Save" text="Save" disabled="[[!_validateCaseName(_caseName)]]" click-listener="[[_createSaveListener()]]"></button-action>
@@ -173,39 +173,6 @@ var searchParameters = {
          */
         cases: {
           type: Array
-        },
-
-        /**
-         * (Required to save document)
-         *
-         * The ID of the document to save.
-         *
-         * @type {String}
-         */
-        documentId: {
-          type: String
-        },
-
-        /**
-         * (Required to save document)
-         *
-         * The name of the document to save, shown in the dialog.
-         *
-         * @type {String}
-         */
-        documentName: {
-          type: String
-        },
-
-        /**
-         * (Required to save document)
-         *
-         * The type of the document to save, shown in the dialog.
-         *
-         * @type {String}
-         */
-        documentType: {
-          type: String
         },
 
         /**
@@ -272,6 +239,39 @@ var searchParameters = {
          */
         profileManager: {
           type: Object
+        },
+
+        /**
+         * (Required to save result)
+         *
+         * The ID of the result to save.
+         *
+         * @type {String}
+         */
+        resultId: {
+          type: String
+        },
+
+        /**
+         * (Required to save result)
+         *
+         * The name of the result to save, shown in the dialog.
+         *
+         * @type {String}
+         */
+        resultName: {
+          type: String
+        },
+
+        /**
+         * (Required to save result)
+         *
+         * The type of the result to save, shown in the dialog.
+         *
+         * @type {String}
+         */
+        resultType: {
+          type: String
         },
 
         /**
@@ -354,15 +354,15 @@ var searchParameters = {
       },
 
       /**
-       * Saves a document, entity, and/or search for the chosen case if the case name is valid and closes the dialog.
+       * Saves a entity, result, and/or search for the chosen case if the case name is valid and closes the dialog.
        */
       save: function() {
         if(this.profileManager && this._validateCaseName(this._caseName)) {
-          if(this.profileManager.saveDocument && this.documentId) {
-            this.profileManager.saveDocument(this._caseName, this.documentId, this.documentName, this.documentType);
-          }
           if(this.profileManager.saveEntity && this.entityId) {
             this.profileManager.saveEntity(this._caseName, this.entityId, this.entityName, this.entityType);
+          }
+          if(this.profileManager.saveResult && this.resultId) {
+            this.profileManager.saveResult(this._caseName, this.resultId, this.resultName, this.resultType);
           }
           if(this.profileManager.saveSearch && this.searchParameters) {
             this.profileManager.saveSearch(this._caseName);
@@ -401,16 +401,16 @@ var searchParameters = {
       },
 
       /**
-       * Returns one of the given types:  the document, the entity, or "Search".
+       * Returns one of the given types:  the entity, result, or "Search".
        *
-       * @param {String} documentType
        * @param {String} entityType
+       * @param {String} resultType
        * @param {Object} searchParameters
        * @return {String}
        * @private
        */
-      _findType: function(documentType, entityType, searchParameters) {
-        return (documentType ? documentType : (entityType ? entityType : (searchParameters ? 'Search' : '')));
+      _findType: function(entityType, resultType, searchParameters) {
+        return (entityType ? entityType : (resultType ? resultType : (searchParameters ? 'Search' : '')));
       },
 
       /**
