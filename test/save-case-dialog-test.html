@@ -59,6 +59,7 @@ limitations under the License.
         }, {
           name: 'Case 2'
         }]);
+        expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
         expect(element.entityType).to.not.exist;
@@ -180,6 +181,7 @@ limitations under the License.
         }, {
           name: 'Case 2'
         }];
+        element.entityField = 'myEntityField';
         element.entityId = 'myEntityId';
         element.entityName = 'My Entity Name';
         element.entityType = 'myEntityType';
@@ -198,6 +200,7 @@ limitations under the License.
         }, {
           name: 'Case 2'
         }]);
+        expect(element.entityField).to.equal('myEntityField');
         expect(element.entityId).to.equal('myEntityId');
         expect(element.entityName).to.equal('My Entity Name');
         expect(element.entityType).to.equal('myEntityType');
@@ -285,11 +288,12 @@ limitations under the License.
 
       test('save does call profileManager.saveEntity then close the dialog', function(done) {
         var called = 0;
-        element.profileManager.saveEntity = function(caseName, entityId, entityName, entityType) {
+        element.profileManager.saveEntity = function(caseName, entityField, entityId, entityName, entityType) {
           ++called;
           expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           expect(caseName).to.equal('myCaseName');
+          expect(entityField).to.equal('myEntityField');
           expect(entityId).to.equal('myEntityId');
           expect(entityName).to.equal('My Entity Name');
           expect(entityType).to.equal('myEntityType');
@@ -348,6 +352,7 @@ limitations under the License.
         }, {
           name: 'Case 2'
         }]);
+        expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
         expect(element.entityType).to.not.exist;
@@ -503,6 +508,7 @@ limitations under the License.
       test('input properties are set as expected', function() {
         expect(element.buildPopupDataFunction).to.be.a('Function');
         expect(element.cases).to.deep.equal([]);
+        expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
         expect(element.entityType).to.not.exist;
@@ -589,6 +595,7 @@ limitations under the License.
       test('input properties are set as expected', function() {
         expect(element.buildPopupDataFunction).to.not.exist;
         expect(element.cases).to.deep.equal([]);
+        expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
         expect(element.entityType).to.not.exist;

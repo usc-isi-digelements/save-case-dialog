@@ -178,6 +178,17 @@ var searchParameters = {
         /**
          * (Required to save entity)
          *
+         * The field of the entity to save.
+         *
+         * @type {String}
+         */
+        entityField: {
+          type: String
+        },
+
+        /**
+         * (Required to save entity)
+         *
          * The ID of the entity to save.
          *
          * @type {String}
@@ -359,7 +370,7 @@ var searchParameters = {
       save: function() {
         if(this.profileManager && this._validateCaseName(this._caseName)) {
           if(this.profileManager.saveEntity && this.entityId) {
-            this.profileManager.saveEntity(this._caseName, this.entityId, this.entityName, this.entityType);
+            this.profileManager.saveEntity(this._caseName, this.entityField, this.entityId, this.entityName, this.entityType);
           }
           if(this.profileManager.saveResult && this.resultId) {
             this.profileManager.saveResult(this._caseName, this.resultId, this.resultName, this.resultType);
