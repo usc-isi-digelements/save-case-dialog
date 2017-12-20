@@ -47,6 +47,7 @@ limitations under the License.
         };
         element.resultId = 'myResultId';
         element.resultName = 'My Result Name';
+        element.resultPrettyType = 'My Result Type';
         element.resultType = 'myResultType';
         element.userId = '1234';
         flush(done);
@@ -62,6 +63,7 @@ limitations under the License.
         expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
+        expect(element.entityPrettyType).to.not.exist;
         expect(element.entityType).to.not.exist;
         expect(element.functionConfig).to.not.exist;
         expect(element.networkExpansionParameters).to.not.exist;
@@ -70,6 +72,7 @@ limitations under the License.
         expect(element.profileManager.saveResult).to.be.an('Function');
         expect(element.resultId).to.equal('myResultId');
         expect(element.resultName).to.equal('My Result Name');
+        expect(element.resultPrettyType).to.equal('My Result Type');
         expect(element.resultType).to.equal('myResultType');
         expect(element.searchParameters).to.not.exist;
         expect(element.userId).to.equal('1234');
@@ -85,7 +88,7 @@ limitations under the License.
       test('does have styled-dialog element', function() {
         expect(element.$$('styled-dialog')).to.exist;
         expect(element.$$('styled-dialog').fill).to.be.true;
-        expect(element.$$('styled-dialog').header).to.equal('Save myResultType');
+        expect(element.$$('styled-dialog').header).to.equal('Save My Result Type to Case');
         expect(element.$$('styled-dialog').id).to.equal('saveDialog');
       });
 
@@ -101,7 +104,7 @@ limitations under the License.
 
       test('does have result div elements', function() {
         expect(element.$$('#resultType')).to.exist;
-        expect(element.$$('#resultType').innerHTML).to.equal('myResultType');
+        expect(element.$$('#resultType').innerHTML).to.equal('My Result Type');
         expect(element.$$('#resultName')).to.exist;
         expect(element.$$('#resultName').innerHTML).to.equal('My Result Name');;
       });
@@ -184,6 +187,7 @@ limitations under the License.
         element.entityField = 'myEntityField';
         element.entityId = 'myEntityId';
         element.entityName = 'My Entity Name';
+        element.entityPrettyType = 'My Entity Type';
         element.entityType = 'myEntityType';
         element.profileManager = {
           reloadUser: function() {},
@@ -203,6 +207,7 @@ limitations under the License.
         expect(element.entityField).to.equal('myEntityField');
         expect(element.entityId).to.equal('myEntityId');
         expect(element.entityName).to.equal('My Entity Name');
+        expect(element.entityPrettyType).to.equal('My Entity Type');
         expect(element.entityType).to.equal('myEntityType');
         expect(element.functionConfig).to.not.exist;
         expect(element.networkExpansionParameters).to.not.exist;
@@ -211,6 +216,7 @@ limitations under the License.
         expect(element.profileManager.saveEntity).to.be.an('Function');
         expect(element.resultId).to.not.exist;
         expect(element.resultName).to.not.exist;
+        expect(element.resultPrettyType).to.not.exist;
         expect(element.resultType).to.not.exist;
         expect(element.searchParameters).to.not.exist;
         expect(element.userId).to.equal('1234');
@@ -226,7 +232,7 @@ limitations under the License.
       test('does have styled-dialog element', function() {
         expect(element.$$('styled-dialog')).to.exist;
         expect(element.$$('styled-dialog').fill).to.be.true;
-        expect(element.$$('styled-dialog').header).to.equal('Save myEntityType');
+        expect(element.$$('styled-dialog').header).to.equal('Save My Entity Type to Case');
         expect(element.$$('styled-dialog').id).to.equal('saveDialog');
       });
 
@@ -237,7 +243,7 @@ limitations under the License.
 
       test('does have entity div elements', function() {
         expect(element.$$('#entityType')).to.exist;
-        expect(element.$$('#entityType').innerHTML).to.equal('myEntityType');
+        expect(element.$$('#entityType').innerHTML).to.equal('My Entity Type');
         expect(element.$$('#entityName')).to.exist;
         expect(element.$$('#entityName').innerHTML).to.equal('My Entity Name');;
       });
@@ -355,6 +361,7 @@ limitations under the License.
         expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
+        expect(element.entityPrettyType).to.not.exist;
         expect(element.entityType).to.not.exist;
         expect(element.functionConfig).to.deep.equal({
           key1: 'Field 1',
@@ -368,6 +375,7 @@ limitations under the License.
         expect(element.profileManager.saveSearch).to.be.an('Function');
         expect(element.resultId).to.not.exist;
         expect(element.resultName).to.not.exist;
+        expect(element.resultPrettyType).to.not.exist;
         expect(element.resultType).to.not.exist;
         expect(element.searchParameters).to.deep.equal({
           key1: ['value1'],
@@ -391,7 +399,7 @@ limitations under the License.
       test('does have styled-dialog element', function() {
         expect(element.$$('styled-dialog')).to.exist;
         expect(element.$$('styled-dialog').fill).to.be.true;
-        expect(element.$$('styled-dialog').header).to.equal('Save Search');
+        expect(element.$$('styled-dialog').header).to.equal('Save Search to Case');
         expect(element.$$('styled-dialog').id).to.equal('saveDialog');
       });
 
@@ -511,6 +519,7 @@ limitations under the License.
         expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
+        expect(element.entityPrettyType).to.not.exist;
         expect(element.entityType).to.not.exist;
         expect(element.functionConfig).to.deep.equal({
           key1: 'Field 1',
@@ -524,6 +533,7 @@ limitations under the License.
         expect(element.profileManager.saveSearch).to.be.an('Function');
         expect(element.resultId).to.not.exist;
         expect(element.resultName).to.not.exist;
+        expect(element.resultPrettyType).to.not.exist;
         expect(element.resultType).to.not.exist;
         expect(element.searchParameters).to.deep.equal({});
         expect(element.userId).to.equal('1234');
@@ -539,7 +549,7 @@ limitations under the License.
       test('does have styled-dialog element', function() {
         expect(element.$$('styled-dialog')).to.exist;
         expect(element.$$('styled-dialog').fill).to.be.true;
-        expect(element.$$('styled-dialog').header).to.equal('Save Search');
+        expect(element.$$('styled-dialog').header).to.equal('Save Search to Case');
         expect(element.$$('styled-dialog').id).to.equal('saveDialog');
       });
 
@@ -598,6 +608,7 @@ limitations under the License.
         expect(element.entityField).to.not.exist;
         expect(element.entityId).to.not.exist;
         expect(element.entityName).to.not.exist;
+        expect(element.entityPrettyType).to.not.exist;
         expect(element.entityType).to.not.exist;
         expect(element.functionConfig).to.not.exist;
         expect(element.networkExpansionParameters).to.not.exist;
@@ -608,6 +619,7 @@ limitations under the License.
         expect(element.profileManager.saveSearch).to.be.an('Function');
         expect(element.resultId).to.not.exist;
         expect(element.resultName).to.not.exist;
+        expect(element.resultPrettyType).to.not.exist;
         expect(element.resultType).to.not.exist;
         expect(element.searchParameters).to.not.exist;
         expect(element.userId).to.equal('1234');
@@ -623,7 +635,7 @@ limitations under the License.
       test('does have styled-dialog element', function() {
         expect(element.$$('styled-dialog')).to.exist;
         expect(element.$$('styled-dialog').fill).to.be.true;
-        expect(element.$$('styled-dialog').header).to.equal('Save ');
+        expect(element.$$('styled-dialog').header).to.equal('');
         expect(element.$$('styled-dialog').id).to.equal('saveDialog');
       });
 
@@ -659,11 +671,11 @@ limitations under the License.
         expect(element.$$('button-action').clickListener.onClick).to.be.a('Function');
       });
 
-      test('_findType does return as expected', function() {
-        expect(element._findType('myEntityType', undefined, undefined)).to.equal('myEntityType');
-        expect(element._findType(undefined, 'myResultType', undefined)).to.equal('myResultType');
-        expect(element._findType(undefined, undefined, {})).to.equal('Search');
-        expect(element._findType(undefined, undefined, undefined)).to.equal('');
+      test('_createHeader does return as expected', function() {
+        expect(element._createHeader('Entity', undefined, undefined)).to.equal('Save Entity to Case');
+        expect(element._createHeader(undefined, 'Result', undefined)).to.equal('Save Result to Case');
+        expect(element._createHeader(undefined, undefined, {})).to.equal('Save Search to Case');
+        expect(element._createHeader(undefined, undefined, undefined)).to.equal('Save Data to Case');
       });
 
       test('_setCaseName does set _caseName', function() {
