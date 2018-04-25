@@ -80,7 +80,6 @@ limitations under the License.
 
       test('private properties are set as expected', function() {
         expect(element._caseName).to.equal('');
-        expect(element._dialogOpened).to.be.false;
         expect(element._networkExpansionParametersToShow).to.not.exist;
         expect(element._searchParametersToShow).to.not.exist;
       });
@@ -132,7 +131,6 @@ limitations under the License.
         var called = 0;
         element.profileManager.reloadUser = function(callback) {
           ++called;
-          expect(element._dialogOpened).to.be.false;
           expect(element.$$('styled-dialog').opened).to.be.false;
           expect(callback).to.be.a('Function');
           callback();
@@ -142,7 +140,6 @@ limitations under the License.
 
         flush(function() {
           expect(called).to.equal(1);
-          expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           done();
         });
@@ -152,7 +149,6 @@ limitations under the License.
         var called = 0;
         element.profileManager.saveResult = function(caseName, resultId, resultName, resultType) {
           ++called;
-          expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           expect(caseName).to.equal('myCaseName');
           expect(resultId).to.equal('myResultId');
@@ -160,13 +156,12 @@ limitations under the License.
           expect(resultType).to.equal('myResultType');
         };
 
-        element._dialogOpened = true;
+        element.$.saveDialog.open();
         element._caseName = 'myCaseName';
         element.save();
 
         flush(function() {
           expect(called).to.equal(1);
-          expect(element._dialogOpened).to.be.false;
           expect(element.$$('styled-dialog').opened).to.be.false;
           expect(element._caseName).to.equal('');
           done();
@@ -224,7 +219,6 @@ limitations under the License.
 
       test('private properties are set as expected', function() {
         expect(element._caseName).to.equal('');
-        expect(element._dialogOpened).to.be.false;
         expect(element._networkExpansionParametersToShow).to.not.exist;
         expect(element._searchParametersToShow).to.not.exist;
       });
@@ -276,7 +270,6 @@ limitations under the License.
         var called = 0;
         element.profileManager.reloadUser = function(callback) {
           ++called;
-          expect(element._dialogOpened).to.be.false;
           expect(element.$$('styled-dialog').opened).to.be.false;
           expect(callback).to.be.a('Function');
           callback();
@@ -286,7 +279,6 @@ limitations under the License.
 
         flush(function() {
           expect(called).to.equal(1);
-          expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           done();
         });
@@ -296,7 +288,6 @@ limitations under the License.
         var called = 0;
         element.profileManager.saveEntity = function(caseName, entityField, entityId, entityName, entityType) {
           ++called;
-          expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           expect(caseName).to.equal('myCaseName');
           expect(entityField).to.equal('myEntityField');
@@ -305,13 +296,12 @@ limitations under the License.
           expect(entityType).to.equal('myEntityType');
         };
 
-        element._dialogOpened = true;
+        element.$.saveDialog.open();
         element._caseName = 'myCaseName';
         element.save();
 
         flush(function() {
           expect(called).to.equal(1);
-          expect(element._dialogOpened).to.be.false;
           expect(element.$$('styled-dialog').opened).to.be.false;
           expect(element._caseName).to.equal('');
           done();
@@ -386,7 +376,6 @@ limitations under the License.
 
       test('private properties are set as expected', function() {
         expect(element._caseName).to.equal('');
-        expect(element._dialogOpened).to.be.false;
         expect(element._networkExpansionParametersToShow).to.deep.equal({
           key1: true
         });
@@ -449,7 +438,6 @@ limitations under the License.
         var called = 0;
         element.profileManager.reloadUser = function(callback) {
           ++called;
-          expect(element._dialogOpened).to.be.false;
           expect(element.$$('styled-dialog').opened).to.be.false;
           expect(callback).to.be.a('Function');
           callback();
@@ -459,7 +447,6 @@ limitations under the License.
 
         flush(function() {
           expect(called).to.equal(1);
-          expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           done();
         });
@@ -469,18 +456,16 @@ limitations under the License.
         var called = 0;
         element.profileManager.saveSearch = function(caseName) {
           ++called;
-          expect(element._dialogOpened).to.be.true;
           expect(element.$$('styled-dialog').opened).to.be.true;
           expect(caseName).to.equal('myCaseName');
         };
 
-        element._dialogOpened = true;
+        element.$.saveDialog.open();
         element._caseName = 'myCaseName';
         element.save();
 
         flush(function() {
           expect(called).to.equal(1);
-          expect(element._dialogOpened).to.be.false;
           expect(element.$$('styled-dialog').opened).to.be.false;
           expect(element._caseName).to.equal('');
           done();
@@ -541,7 +526,6 @@ limitations under the License.
 
       test('private properties are set as expected', function() {
         expect(element._caseName).to.equal('');
-        expect(element._dialogOpened).to.be.false;
         expect(element._networkExpansionParametersToShow).to.be.null;
         expect(element._searchParametersToShow).to.be.null;
       });
@@ -627,7 +611,6 @@ limitations under the License.
 
       test('private properties are set as expected', function() {
         expect(element._caseName).to.equal('');
-        expect(element._dialogOpened).to.be.false;
         expect(element._networkExpansionParametersToShow).to.not.exist;
         expect(element._searchParametersToShow).to.not.exist;
       });

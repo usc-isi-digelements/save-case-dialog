@@ -100,7 +100,7 @@ var searchParameters = {
       }
     </style>
 
-    <styled-dialog id="saveDialog" opened="{{_dialogOpened}}" header="[[_createHeader(entityPrettyType, resultPrettyType, searchParameters)]]" fill>
+    <styled-dialog id="saveDialog" header="[[_createHeader(entityPrettyType, resultPrettyType, searchParameters)]]" fill>
       <template is="dom-if" if="[[_searchParametersToShow]]">
         <terms-display collection="[[_searchParametersToShow]]"></terms-display>
       </template>
@@ -341,18 +341,6 @@ var searchParameters = {
         },
 
         /**
-         * Whether the dialog is opened.
-         *
-         * @type {Boolean}
-         * @default false
-         * @private
-         */
-        _dialogOpened: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
          * The network expansion parameters object to show in the terms-display.
          *
          * @type {Object}
@@ -382,7 +370,7 @@ var searchParameters = {
         if(this.profileManager && this.profileManager.reloadUser) {
           var self = this;
           this.profileManager.reloadUser(function() {
-            self.set('_dialogOpened', true);
+            self.$.saveDialog.open();
           });
         }
       },
@@ -402,7 +390,7 @@ var searchParameters = {
             this.profileManager.saveSearch(this._caseName);
           }
           this.set('_caseName', '');
-          this.set('_dialogOpened', false);
+          this.$.saveDialog.close();
         }
       },
 

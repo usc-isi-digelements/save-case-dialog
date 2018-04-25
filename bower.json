@@ -1,7 +1,7 @@
 {
   "name": "save-case-dialog",
   "description": "A Polymer Element showing a dialog to save an entity, result, or search in a case using a profile manager.",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
   "keywords": [
@@ -22,8 +22,8 @@
     "paper-item": "PolymerElements/paper-item#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
     "paper-styles": "PolymerElements/paper-styles#^2.0.0",
-    "styled-dialog": "DigElements/styled-dialog#2.1.5",
-    "terms-display": "DigElements/terms-display#2.1.6"
+    "styled-dialog": "DigElements/styled-dialog#2.2.0",
+    "terms-display": "DigElements/terms-display#2.1.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
