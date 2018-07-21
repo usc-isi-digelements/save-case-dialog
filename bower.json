@@ -9,21 +9,21 @@
     "polymer"
   ],
   "main": "save-case-dialog.html",
-  "homepage": "https://github.com/DigElements/save-case-dialog/",
+  "homepage": "https://github.com/usc-isi-digelements/save-case-dialog/",
   "ignore": [
     "/.*",
     "/test/"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.2",
-    "button-action": "DigElements/button-action#2.0.4",
+    "button-action": "usc-isi-digelements/button-action#2.0.4",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
     "paper-item": "PolymerElements/paper-item#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
     "paper-styles": "PolymerElements/paper-styles#^2.0.0",
-    "styled-dialog": "DigElements/styled-dialog#2.2.0",
-    "terms-display": "DigElements/terms-display#2.1.7"
+    "styled-dialog": "usc-isi-digelements/styled-dialog#2.2.0",
+    "terms-display": "usc-isi-digelements/terms-display#2.1.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
