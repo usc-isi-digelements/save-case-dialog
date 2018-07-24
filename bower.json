@@ -1,29 +1,24 @@
 {
   "name": "save-case-dialog",
-  "description": "A Polymer Element showing a dialog to save an entity, result, or search in a case using a profile manager.",
-  "version": "2.1.5",
+  "description":
+    "A Polymer Element showing a dialog to save an entity, result, or search in a case using a profile manager.",
+  "version": "2.1.6",
   "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
-  "keywords": [
-    "web-component",
-    "polymer"
-  ],
+  "keywords": ["web-component", "polymer"],
   "main": "save-case-dialog.html",
   "homepage": "https://github.com/usc-isi-digelements/save-case-dialog/",
-  "ignore": [
-    "/.*",
-    "/test/"
-  ],
+  "ignore": ["/.*", "/test/"],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.2",
-    "button-action": "usc-isi-digelements/button-action#2.0.4",
+    "button-action": "usc-isi-digelements/button-action#^2.0.4",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
     "paper-item": "PolymerElements/paper-item#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
     "paper-styles": "PolymerElements/paper-styles#^2.0.0",
-    "styled-dialog": "usc-isi-digelements/styled-dialog#2.2.0",
-    "terms-display": "usc-isi-digelements/terms-display#2.1.7"
+    "styled-dialog": "usc-isi-digelements/styled-dialog#^2.2.2",
+    "terms-display": "usc-isi-digelements/terms-display#^2.1.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
